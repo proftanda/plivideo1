@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+
+	// WRAPPER
+	#wrapper
+
+		p Click on the button to trigger the call #{title}
+		#phoneForm
+			fieldset
+				input#inputPhoneNumber(type='text', placeholder='16463712714', value='16463712714')
+				button#btnTriggerCall Trigger Call
+
+	// /WRAPPER

@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var api = require('./routes/api');
 
 var plivo = require('plivo-node');
 var p = plivo.RestAPI(require('../config'));
@@ -33,10 +33,13 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req,res,next){
+    req.p = p;
+    next();
+});
 
 app.use('/', routes);
-
-// app.use('/users', users);
+app.use('/api', api);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -78,6 +81,10 @@ app.use(function(err, req, res, next) {
 
 // thisCall=makeCall();
 
+//thisApp=createApp();
+
+app.listen(process.env.PORT || 3002);
+
 
 // =========================================================================
 // MAIN FUNCTIONS
@@ -92,11 +99,11 @@ function createApp(){
 
     params = {
         'app_name': 'plivideo1',
-        'answer_url' : 'http://imadeatest.com:3002/answer_url',
+        'answer_url' : 'http://imadeatest.com:3002/api/answer_url',
         'answer_method' : 'POST',
-        'hangup_url' : 'http://imadeatest.com:3002/hangup_url',
+        'hangup_url' : 'http://imadeatest.com:3002/api/hangup_url',
         'hangup_method' : 'POST',
-        'fallback_url' : 'http://imadeatest.com:3002/fallback_url',
+        'fallback_url' : 'http://imadeatest.com:3002/api/fallback_url',
         'fallback_method' : 'POST',
     };
 
@@ -115,7 +122,7 @@ function makeCall() {
     var params = {
         from: '17852929203',
         to: '16463712714',
-        answer_url: 'http://imadeatest.com:3002/answer_url',
+        answer_url: 'http://imadeatest.com:3002/api/answer_url',
     };
 
     p.make_call(params, function(status, response) {
@@ -130,6 +137,10 @@ function makeCall() {
     });
 
 }
+
+
+
+
 
 
 module.exports = app;
