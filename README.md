@@ -6,3 +6,5 @@ v0.0.1
 - The app dials the number
 - And plays some audio
 - And plays a video on the webpage
+
+- Credentials for Plivo are stored in config.json

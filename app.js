@@ -35,7 +35,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', routes);
-app.use('/users', users);
+
+// app.use('/users', users);
 
 /// catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -75,11 +76,11 @@ app.use(function(err, req, res, next) {
 
 //app = createApp();
 
-thisCall=makeCall();
+// thisCall=makeCall();
 
 
 // =========================================================================
-// FUNCTIONS
+// MAIN FUNCTIONS
 // =========================================================================
 
 
@@ -90,7 +91,7 @@ function createApp(){
     var params = {};
 
     params = {
-        'app_name': 'plivo-node1',
+        'app_name': 'plivideo1',
         'answer_url' : 'http://imadeatest.com:3002/answer_url',
         'answer_method' : 'POST',
         'hangup_url' : 'http://imadeatest.com:3002/hangup_url',
