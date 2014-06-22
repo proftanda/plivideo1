@@ -43,7 +43,7 @@ APP.triggerCall = function(event) {
         $.ajax({
             type: 'POST',
             data: callDetails,
-            url: '/triggercall',
+            url: 'api/triggercall',
             dataType: 'JSON'
         }).done(function( response ) {
 

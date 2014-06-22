@@ -8,12 +8,10 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var plivo = require('plivo-node');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
-
-var plivo = require('plivo-node');
-var p = plivo.RestAPI(require('../config'));
 
 
 var app = express();
@@ -33,12 +31,10 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req,res,next){
-    req.p = p;
-    next();
-});
-
+// 
 app.use('/', routes);
+
+// this is the plivo router
 app.use('/api', api);
 
 /// catch 404 and forward to error handler
@@ -84,63 +80,5 @@ app.use(function(err, req, res, next) {
 //thisApp=createApp();
 
 app.listen(process.env.PORT || 3002);
-
-
-// =========================================================================
-// MAIN FUNCTIONS
-// =========================================================================
-
-
-
-// Create new application
-function createApp(){
-
-    var params = {};
-
-    params = {
-        'app_name': 'plivideo1',
-        'answer_url' : 'http://imadeatest.com:3002/api/answer_url',
-        'answer_method' : 'POST',
-        'hangup_url' : 'http://imadeatest.com:3002/api/hangup_url',
-        'hangup_method' : 'POST',
-        'fallback_url' : 'http://imadeatest.com:3002/api/fallback_url',
-        'fallback_method' : 'POST',
-    };
-
-    p.create_application(params, function(status, response) {
-        console.log('Status: ', status);
-        console.log('API Response:\n', response);
-    });
-
-};
-
-// Make a call
-function makeCall() {
-
-    console.log("Making the call!");
-
-    var params = {
-        from: '17852929203',
-        to: '16463712714',
-        answer_url: 'http://imadeatest.com:3002/api/answer_url',
-    };
-
-    p.make_call(params, function(status, response) {
-        if (status >= 200 && status < 300) {
-            console.log('Successfully made call request.');
-            console.log('Response:', response);
-        } else {
-            console.log('Oops! Something went wrong.');
-            console.log('Status:', status);
-            console.log('Response:', response);
-        }
-    });
-
-}
-
-
-
-
-
 
 module.exports = app;
