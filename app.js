@@ -8,7 +8,6 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var plivo = require('plivo-node');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
@@ -31,10 +30,10 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 
+// router for web pages
 app.use('/', routes);
 
-// this is the plivo router
+// router for plivo api
 app.use('/api', api);
 
 /// catch 404 and forward to error handler

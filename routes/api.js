@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var plivo = require('plivo-node');
+var currentCall = {};
 
-
-/* Print out API requests */
+/* API request logging */
 
 router.post('*', function(req, res, next) { 
 
@@ -12,7 +12,7 @@ router.post('*', function(req, res, next) {
 
 });
 
-/* POST trigger call */
+/* Trigger call */
 
 router.post('/triggercall', function(req, res) {
 	
@@ -37,7 +37,11 @@ router.post('/triggercall', function(req, res) {
 
         if (status >= 200 && status < 300) {
             console.log('Successfully made call request.');
-            console.log('Response:', response);           
+            console.log('Response:', response);
+
+            // associate currentCall with a successful dial out response
+            currentCall = response;   
+
         } else {
             console.log('Oops! Something went wrong.');
             console.log('Status:', status);
@@ -54,16 +58,53 @@ router.post('/triggercall', function(req, res) {
 });
 
 
-/* POST answer_url */
+/* Plivo answer_url handler */
 
 router.post('/answer_url', function(req, res) {
 
 	var r = plivo.Response();
 
-  console.log('Post request:', req.body);
-  console.log('Result:', res.body);
+  	// is it currentCall?
+  	if (req.body.RequestUUID === currentCall.request_uuid) {
+  		
+  		console.log('RequestUUID matches currentCall');
+  		console.log('Event:', req.body.Event);
 
-  res.send();
+
+  		// is it someone picking up? 
+  		if (req.body.Event === 'StartApp') {
+
+		 	// Yes...
+			
+  			// create a response
+
+  			// add the Speak element
+  			// Speak accepts both "body" and "attributes" as params.
+  			// note that "loop" is a valid attribute for Speak element - https://www.plivo.com/docs/xml/speak/
+  			r.addSpeak('Hello world!', { loop: 2 });
+
+  			// add the Wait element
+  			// Wait accepts only "attributes" as a param - https://www.plivo.com/docs/xml/wait/
+  			r.addWait({ length: 3 });
+
+  			// add the DTMF element
+  			// DTMF accepts only "body" as a param - https://www.plivo.com/docs/xml/dtmf/
+  			r.addDTMF('12345');
+
+
+  			console.log(r.toXML());
+  		
+  			// render as Plivo XML
+  			res.send(r.toXML());
+
+  		}
+
+
+  	} else {
+
+  		console.log('RequestUUID doesn\'t match');
+
+  	}
 
 });
 
