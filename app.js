@@ -2,22 +2,27 @@
 // REQUIRES & GLOBAL VARS
 // =========================================================================
 
+// modules
 var express = require('express');
 var path = require('path');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var http = require('http');
+var socketio = require('socket.io');
 
+// set route files
 var routes = require('./routes/index');
 var api = require('./routes/api');
 
 
-var app = express();
-
 // =========================================================================
 // EXPRESS SET-UP
 // =========================================================================
+
+// create an express app;
+var app = express();
 
 // views set-up
 app.set('views', path.join(__dirname, 'views'));
@@ -67,17 +72,39 @@ app.use(function(err, req, res, next) {
     });
 });
 
+
+// =========================================================================
+// SOCKET.IO SET-UP
+// =========================================================================
+
+// create a server using http
+// pass it the express app
+// set it to listen on port 3003
+
+var server=http.Server(app).listen(3030);
+
+
+// instantiate socket.io and pass it the server to listen to... 
+var io = socketio(server);
+
+// create manager with eventhandlers for socket events
+
+var manager = require('./manager');
+
+io.on('connection', function(socket){
+    
+    //console.log('Socket event on: ' + socket.id);
+    manager.initClient(io, socket);
+
+});
+
+
 // =========================================================================
 // MAIN
 // =========================================================================
 
 
-//app = createApp();
+//app.listen(process.env.PORT || 3000);
 
-// thisCall=makeCall();
-
-//thisApp=createApp();
-
-app.listen(process.env.PORT || 3002);
 
 module.exports = app;
