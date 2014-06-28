@@ -227,6 +227,7 @@ manager.handleAPI = function (req, res) {
                 // delete call from calls
                 if (calls[req.body.CallUUID]) {
 
+                    console.log('Received hangup. Deleting call from calls...', calls); 
                     delete calls[req.body.CallUUID];
 
                 } else {
@@ -234,6 +235,8 @@ manager.handleAPI = function (req, res) {
                     console.log('Can\'t find call to hang up');
 
                 }
+                
+                console.log('Here\'s all the current calls after the hang-up: ', calls);                
 
                 break;
 
