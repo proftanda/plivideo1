@@ -91,10 +91,12 @@ var io = socketio(server);
 
 var manager = require('./manager');
 
+// pass the socket.io instance to the manager;
+//manager.init(io);
+
 io.on('connection', function(socket){
     
-    //console.log('Socket event on: ' + socket.id);
-    manager.initClient(io, socket);
+    manager.initClient(socket);
 
 });
 

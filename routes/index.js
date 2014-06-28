@@ -6,5 +6,9 @@ router.get('/', function(req, res) {
   res.render('index-sio', { title: 'PLIVIDEO1' });
 });
 
+router.get('/test', function(req, res) {
+  res.render('test', { title: 'Test Post' });
+});
+
 
 module.exports = router;

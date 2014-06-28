@@ -14,17 +14,60 @@ $(document).ready(function() {
     // Update User button click
     $('#btnTriggerCallio').on('click', APP.triggerCallio);
 
+    // Update Test button click
+    $('#btnTestPost').on('click', APP.testPost);
+
     // Handle incoming messages
     APP.socket.on('ping', function(msg) { console.log(msg); } );
    
     APP.socket.on('trigger call', function(msg) { console.log(msg); } );
 
+    APP.socket.on('play', function(msg) { console.log(msg); } );
+   
 });
 
 
 // Functions =============================================================
 
 // Trigger Call with socket
+
+APP.testPost = function (event) {
+
+    event.preventDefault();
+
+
+    var body = { TotalCost: '0.01200',
+        Direction: 'inbound',
+        HangupCause: 'NORMAL_CLEARING',
+        From: '17852929203',
+        Duration: '3',
+        ALegUUID: 'ff32aee4-fbb8-11e3-8a2f-076b8ee5485e',
+        BillDuration: '60',
+        BillRate: '0.01200',
+        To: '16463712714',
+        AnswerTime: '2014-06-24 16:02:59',
+        StartTime: '2014-06-24 16:02:52',
+        CallUUID: 'ff32aee4-fbb8-11e3-8a2f-076b8ee5485e',
+        ALegRequestUUID: '2f28bf07-fe71-4ef3-ba55-4603cc8fb131',
+        RequestUUID: '2f28bf07-fe71-4ef3-ba55-4603cc8fb131',
+        EndTime: '2014-06-24 16:03:01',
+        CallStatus: 'completed',
+        Event: 'StartApp'
+    }
+
+    console.log('ajax post');
+
+    $.ajax({
+            type: 'POST',
+            data: body,
+            url: 'api/answer_url',
+            dataType: 'JSON'
+        }).done(function( response ) {
+
+            console.log('ajax response:', response);
+
+        });
+};
 
 APP.triggerCallio = function(event) {
 
