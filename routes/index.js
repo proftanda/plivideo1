@@ -10,5 +10,9 @@ router.get('/test', function(req, res) {
   res.render('test', { title: 'Test Post' });
 });
 
+router.get('/video', function(req, res) {
+  res.render('video', { title: 'Video Player' });
+});
+
 
 module.exports = router;
