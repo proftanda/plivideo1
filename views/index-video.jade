@@ -1,0 +1,16 @@
+extends layout
+
+block content
+	//h1= title
+
+	#formwrapper
+
+		p Click on the button to trigger the call #{title}
+		#phoneForm
+			fieldset
+				input#inputPhoneNumber(type='text', placeholder='16463712714', value='16463712714')
+				button#btnTriggerCallio Trigger Call
+
+	#wrapper(width='50%')
+		video#videoPlayer(width='960', height='540', style='height:100%;min-width:100%;min-height: 100%;')
+			source(src='/images/house.mp4')		

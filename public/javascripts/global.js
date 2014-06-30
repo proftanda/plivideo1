@@ -28,7 +28,8 @@ $(document).ready(function() {
         // enables Flash and Silverlight to resize to content size
         enableAutosize: true,
         // the order of controls you want on the control bar (and other plugins below)
-        features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+        //features: ['playpause','progress','current','duration','tracks','volume','fullscreen'],
+        features: ['progress','current','duration','volume'],
         // Hide controls when playing and mouse is not over the video
         alwaysShowControls: false,
         // force iPad's native controls
