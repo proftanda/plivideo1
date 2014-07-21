@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index-video', { title: 'PLIVIDEO1' });
+  res.render('index-v010', { title: 'PLIVIDEO1' });
 });
 
 router.get('/test', function(req, res) {

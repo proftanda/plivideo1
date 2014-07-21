@@ -87,18 +87,18 @@ var server=http.Server(app).listen(3030);
 // instantiate socket.io and pass it the server to listen to... 
 var io = socketio(server);
 
+
+// =========================================================================
+// MANAGER SET-UP
+// =========================================================================
+
 // create manager with eventhandlers for socket events
 
 var manager = require('./manager');
 
-// pass the socket.io instance to the manager;
-//manager.init(io);
+// pass the socket.io instance to the manager
+manager.init(io);
 
-io.on('connection', function(socket){
-    
-    manager.initClient(socket);
-
-});
 
 
 // =========================================================================

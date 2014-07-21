@@ -1,47 +1,116 @@
-// module dependencies
+// DEPENDENCIES
+// ============
+
 var plivo = require('plivo-node');
 
-// this module
+
+// VARS
+// ====
 
 var manager = {};
-
-// vars
-
-//var myio = {};
-var p = plivo.RestAPI(require('../config'));
 var sequence = 1;
-var clients = [];
 var calls = {};
 var callRequests = {};
-//var theio = {};
+var p;
+var io;
+var performances = {};
+var performanceScript = {
+    "1-1":"showPhone",
+    "1-2" : "callListener1-2",
+    "1-3" : "callListener1-3",
+    "2-1" : "clearListeners",
+    "2-2" : "callListener2-2",
+    "2-3" : "callListener2-3",
+    "2-4" : "callListener2-4",
+    "2-5" : "clearUI",
+    "2-6" : "playVideo2-6",
+    "3-1" : "clearListeners",
+    "3-2" : "callListener3-2",
+    "3-3" : "playVideo3-3",
+};
 
-// functions
 
-//manager.init = function(io){
+// PUBLIC FUNCTIONS
+// ================
 
-  //  theio = io;
-//}
+// initialise manager with socketio instance
 
-manager.initClient=function(thisSocket) {
-   
-    // add this socket to the clients list
-    clients.push(thisSocket);
+manager.init = function (theio){
+
+    // add instance to manager
+    io = theio;
+
+    // add callback for connections
+    io.on('connection', function(socket){   
+        initClient(socket);
+    });
+
+    // add plivo instance
+    p = plivo.RestAPI(require('../config'));
+
+}
+
+//clientmanager.init();
+
+// PRIVATE FUNCTIONS
+// =================
+
+
+function initClient(thisSocket) {
+
+    // create a new 'performance'
+    var thisPerformance = {};
+
+
+    // add the socket to the performance
+    thisPerformance.socket = thisSocket;
+
+    // add socket handlers
+    addSocketHandlers(thisSocket);
+
+    // open performance-script
+    thisPerformance.script = function (script) {
+
+        // save a copy to this performance
+        return script;
+
+    }(performanceScript);
+    
+    // add to performances using socket.id as the key?
+    performances[thisSocket.id] = thisPerformance;
     console.log('New connection:' + thisSocket.id);
-     
-    // the eventhandlers...
+
+    // send script to client 
+    thisSocket.emit('script', thisPerformance.script);
+
+}
+
+
+function addSocketHandlers(thisSocket) {
    
     // socket disconnects
-
     thisSocket.on('disconnect', function() {
 
         console.log('Disconnect:' + thisSocket.id);
-        var index = clients.indexOf(thisSocket);
 
-        if (index != -1) {
-            clients.splice(index, 1);
-            console.info('Client removed ' + thisSocket.id);
+        if (performances[thisSocket.id]) {
+
+            delete performances[thisSocket.id];
+            console.info('Performance deleted for:' + thisSocket.id);
+
+        } else {
+
+            console.info('No performance found for:' + thisSocket.id);
+
         }
+
     });
+
+    // a generic message from the client
+    thisSocket.on('message', function() {
+
+    });
+
 
 
     // trigger call
@@ -261,18 +330,21 @@ manager.handleAPI = function (req, res) {
 // Ping a random client...
 setInterval(function() {
 
-    var randomClient;
+    // choose a random key
+    var randomKey,
+        keys = Object.keys(performances);
 
-    if (clients.length > 0) {
+    if (keys.length != 0) {
 
-        randomClient = Math.floor(Math.random() * clients.length);
-        clients[randomClient].emit('ping', sequence++);
+        randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+        performances[randomKey].socket.emit('ping', sequence++);
+        console.log("Ping " + randomKey, sequence);
         
-        console.log("Ping " + clients[randomClient].id, sequence);
-
+        
     }
 
-}, 10000);
+}, 1000);
 
 //manager.clients = clients;
 //manager.calls = calls;
